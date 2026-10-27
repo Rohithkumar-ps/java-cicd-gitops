@@ -1,18 +1,37 @@
 replicaCount: 2
 
 image:
-  repository: "590385682114.dkr.ecr.ap-south-1.amazonaws.com/cicd-demo-app"
-  tag: "bootstrap"
-  pullPolicy: IfNotPresent
+  repository: "952837501939.dkr.ecr.ap-southeast-2.amazonaws.com/java-cicd-app"
+  tag: "7"
+  pullPolicy: Always
+
+containerPort: 8080
+
+service:
+  type: ClusterIP
+  port: 80
 
 ingress:
-  enabled: true
-  className: alb
-  scheme: internet-facing
-  targetType: ip
-  path: /
-  pathType: Prefix
-  healthcheckPath: /health
-  listenPorts: '[{"HTTP":80}]'
-  certificateArn: ""
-  sslRedirect: false
+  enabled: false
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+probes:
+  readiness:
+    path: /health
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  liveness:
+    path: /health
+    initialDelaySeconds: 20
+    periodSeconds: 20
+
+serviceAccount:
+  create: false
+  name: default
