@@ -1,0 +1,46 @@
+replicaCount: 2
+
+image:
+  repository: REPLACE_WITH_ECR_URI
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+containerPort: 8080
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: alb
+  scheme: internet-facing
+  targetType: ip
+  path: /
+  pathType: Prefix
+  healthcheckPath: /health
+  listenPorts: '[{"HTTP":80}]'
+  certificateArn: ""
+  sslRedirect: false
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+probes:
+  readiness:
+    path: /health
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  liveness:
+    path: /health
+    initialDelaySeconds: 20
+    periodSeconds: 20
+
+serviceAccount:
+  create: false
+  name: default
