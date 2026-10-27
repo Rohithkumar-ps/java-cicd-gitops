@@ -1,0 +1,18 @@
+replicaCount: 2
+
+image:
+  repository: "590385682114.dkr.ecr.ap-south-1.amazonaws.com/cicd-demo-app"
+  tag: "bootstrap"
+  pullPolicy: IfNotPresent
+
+ingress:
+  enabled: true
+  className: alb
+  scheme: internet-facing
+  targetType: ip
+  path: /
+  pathType: Prefix
+  healthcheckPath: /health
+  listenPorts: '[{"HTTP":80}]'
+  certificateArn: ""
+  sslRedirect: false
